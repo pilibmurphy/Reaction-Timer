@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "../app/App";
 
@@ -37,7 +38,9 @@ describe("Reaction Timer", () => {
 
     fireEvent.click(getScreenButton()); // BLUE -> RED (effect schedules timeout)
 
-    await vi.runOnlyPendingTimersAsync();
+    await act(async () => {
+      await vi.runOnlyPendingTimersAsync();
+    });
 
     expect(screen.getByText("CLICK!")).toBeInTheDocument();
   });
@@ -59,7 +62,9 @@ describe("Reaction Timer", () => {
 
     fireEvent.click(getScreenButton()); // BLUE -> RED
 
-    await vi.runOnlyPendingTimersAsync();
+    await act(async () => {
+      await vi.runOnlyPendingTimersAsync();
+    });
 
     Date.now.mockImplementation(() => 1_123);
 
@@ -74,7 +79,9 @@ describe("Reaction Timer", () => {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       fireEvent.click(getScreenButton()); // BLUE -> RED
 
-      await vi.runOnlyPendingTimersAsync();
+      await act(async () => {
+        await vi.runOnlyPendingTimersAsync();
+      });
 
       Date.now.mockImplementation(() => 1_000 + attempt * 100);
 
